@@ -5,12 +5,20 @@ import os
 
 def client():
     c_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    c_sock.connect(('127.0.0.1', 123))
+    c_sock.connect(('127.0.0.1', 4242))
 
     def receive():
         while True:
             message = c_sock.recv(255).decode('utf-8')
             print(message)
+            if message.startswith("STATUS: OK"):
+                print('Close...')
+                write_thread.join()
+                print(write_thread.is_alive())
+                receive_thread.join()
+                print(receive_thread.is_alive())
+                c_sock.close()
+                exit(0)
 
     def write():
         while True:

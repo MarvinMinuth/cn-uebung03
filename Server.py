@@ -5,14 +5,14 @@ import threading
 
 def server():
     s_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s_sock.bind(('127.0.0.1', 123))
+    s_sock.bind(('127.0.0.1', 4242))
     s_sock.listen()
 
     def client_put(message):
-        file_name = message.strip[1]
-        file_path = 'put/'+file_name
-        file_size = message.strip[2]
-        file = open(file_name, 'wb')
+        file_name = message.split()[1]
+        file_path = './put/'+file_name
+        file_size = int(message.split()[2])
+        file = open(file_path, 'wb')
         while file_size > 0:
             if file_size >= 1024:
                 data = c_sock.recv(1024)
@@ -20,10 +20,9 @@ def server():
             else:
                 data = c_sock.recv(file_size)
                 file_size = 0
-            print('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
             print(data)
             file.write(data)
-            print('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+            print('######################################################')
 
         file.close()
         print("File closed")
@@ -32,6 +31,7 @@ def server():
         print("Socket closed")
         s_sock.close()
         print("Server closed")
+        exit(0)
 
     while True:
         c_sock, c_addr = s_sock.accept()
